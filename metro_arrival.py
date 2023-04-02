@@ -144,7 +144,7 @@ def main():
     logging.info(f"Using station {stations[config['metro']['station']][0]}({config['metro']['station']}), platform {config['metro']['platform']}")
 
 
-    panel = LEDPanel(128, 32, 12, (pygame.FULLSCREEN | pygame.SCALED) if args.fullscreen else 0)
+    panel = LEDPanel(108, 32, 12, (pygame.FULLSCREEN | pygame.SCALED) if args.fullscreen else 0)
     api = Wmata_API(config['api']['url'], config['api']['key'])
     next_fetch = time.time() - 1
     trains = []
@@ -164,7 +164,7 @@ def main():
 
         # draw the header
         panel.clear()
-        panel.text(0, 0, "LN CAR DEST       MIN", colors['RD'])
+        panel.text(0, 0, "LN CAR DEST    MIN", colors['RD'])
         cy = 8
         # draw the predictions
         for t in trains:
@@ -175,7 +175,10 @@ def main():
             # destination
             panel.text(30, cy, t[2], colors['YL'])
             # min
-            panel.text(108, cy, t[3], colors['YL'])
+            m = t[3]
+            while len(m) < 3:
+                m = " " + m
+            panel.text(90, cy, m, colors['YL'])
             cy += 8
 
        
