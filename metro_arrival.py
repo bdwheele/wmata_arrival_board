@@ -4,6 +4,10 @@ import argparse
 import logging
 import configparser
 import sys
+import pygame
+from pygame_led import LEDPanel
+from wmata_api import Wmata_API
+import time
 
 stations = {
     # code: [name, lines, platforms]
@@ -110,11 +114,23 @@ stations = {
     "N12": ["Ashburn",["SV"],2],
 }
 
+colors = {
+    'black': "#000000",
+    'white': "#ffffff",
+    "red": "#ff0000",
+    'RD': "#ff0000",
+    'OR': "#ff5500",
+    'YL': '#ffff00',
+    'GR': "#00ff00",
+    'BL': "#0000ff",
+    'SV': "#aaaaaa"
+}
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("--conf", type=str, default=sys.path[0] + "/metro_arrival.conf", help="alternate configuration file")
+    parser.add_argument("--fullscreen", default=False, action="store_true", help="Use full screen")
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
@@ -127,6 +143,47 @@ def main():
 
     logging.info(f"Using station {stations[config['metro']['station']][0]}({config['metro']['station']}), platform {config['metro']['platform']}")
 
+
+    panel = LEDPanel(128, 32, 12, (pygame.FULLSCREEN | pygame.SCALED) if args.fullscreen else 0)
+    api = Wmata_API(config['api']['url'], config['api']['key'])
+    next_fetch = time.time() - 1
+    trains = []
+    running = True
+    while running:
+        # poll for events
+        # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN and event.key in (pygame.K_ESCAPE, pygame.K_q):
+                running = False
+
+        if time.time() > next_fetch:
+            trains = api.fetch_predition(config['metro']['station'], config['metro']['platform'])
+            next_fetch = time.time() + 30
+
+        # draw the header
+        panel.clear()
+        panel.text(0, 0, "LN CAR DEST       MIN", colors['RD'])
+        cy = 8
+        # draw the predictions
+        for t in trains:
+            # line name
+            panel.text(0, cy, t[0], colors['YL'])
+            # cars
+            panel.text(18, cy, t[1], colors['GR'] if t[1] == '8' else colors['YL'])
+            # destination
+            panel.text(30, cy, t[2], colors['YL'])
+            # min
+            panel.text(108, cy, t[3], colors['YL'])
+            cy += 8
+
+       
+        # flip() the display to put your work on screen
+        pygame.display.flip()
+        pygame.time.delay(100)
+
+    pygame.quit()
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,10 @@
 # using pygame, implement an LED panel and handle it
 # appropriately
 import pygame
+import pygame.display
+import pygame.draw
+from pygame.color import Color
+
 
 # a 5x7 font.  Each byte is a column starting at the left and the
 # lsb of each byte is the highest pixel in the character.  
@@ -42,7 +46,7 @@ fivebyseven = {
     "A": [0x7E, 0x11, 0x11, 0x11, 0x7E],
     "B": [0x7F, 0x49, 0x49, 0x49, 0x36],
     "C": [0x3E, 0x41, 0x41, 0x41, 0x22],
-    "C": [0x7F, 0x41, 0x41, 0x22, 0x1C],
+    "D": [0x7F, 0x41, 0x41, 0x22, 0x1C],
     "E": [0x7F, 0x49, 0x49, 0x49, 0x41],
     "F": [0x7F, 0x09, 0x09, 0x01, 0x01],
     "G": [0x3E, 0x41, 0x41, 0x51, 0x32],
@@ -106,16 +110,26 @@ fivebyseven = {
 
 
 class LEDPanel:
-    def __init__(self, x, y):
-        pass
+    def __init__(self, x, y, ledsize, flags=0):
+        "create an LED panel of x/y leds and a given size"
+        self.x = x
+        self.y = y
+        self.ledsize = ledsize
+        self.surface = pygame.display.set_mode((x * ledsize, y * ledsize), flags)
 
     def clear(self):
         # set the screen to all black
-        pass
+        for x in range(0, self.x):
+            for y in range(0, self.y):
+                self.reset(x, y)
+        
 
     def set(self, x, y, color):
         "Set a single LED to the given color"
-        pass
+        cx = x * self.ledsize + self.ledsize / 2
+        cy = y * self.ledsize + self.ledsize / 2
+        pygame.draw.circle(self.surface, Color(color), (cx, cy), radius = self.ledsize / 2)
+                           
 
     def reset(self, x, y):
         "Turn off an LED"
@@ -130,5 +144,18 @@ class LEDPanel:
     def char(self, x, y, char, color):
         if char not in fivebyseven:
             char = None
-        
-    
+        for i in range(0, 5):
+            byte = fivebyseven[char][i]
+            for j in range(0, 8):
+                if byte & 1:
+                    self.set(x + i, y + j, color)
+                else:
+                    self.reset(x + i, y + j)
+                byte = byte >> 1
+                    
+    def text(self, x, y, text, color):
+        cx = x
+        for c in text:
+            self.char(cx, y, c, color)    
+            cx += 6
+
