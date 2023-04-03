@@ -159,7 +159,12 @@ def main():
                 running = False
 
         if time.time() > next_fetch:
-            trains = api.fetch_predition(config['metro']['station'], config['metro']['platform'])
+            try:
+                trains = api.fetch_predition(config['metro']['station'], config['metro']['platform'])
+            except Exception:
+                # wait a second and try again
+                pygame.time.delay(1000)
+                continue
             next_fetch = time.time() + 30
 
             # draw the header

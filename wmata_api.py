@@ -15,5 +15,5 @@ class Wmata_API:
         for t in res:
             if t['Group'] == platform:
                 trains.append([t['Line'], t['Car'], t['Destination'], t['Min']])
-        
+
         return trains

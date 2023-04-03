@@ -155,7 +155,8 @@ class LEDPanel:
                     
     def text(self, x, y, text, color):
         cx = x
-        for c in text:
-            self.char(cx, y, c, color)    
-            cx += 6
+        if text is not None:
+            for c in text:
+                self.char(cx, y, c, color)    
+                cx += 6
 
