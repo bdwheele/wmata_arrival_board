@@ -15,9 +15,9 @@ class Wmata_API:
         for t in res:
             if t['Group'] == platform:
                 if t['Line'] == 'No':
-                    t['Line'] = '  '
-                    t['Car'] = ' '
-                    t['Destination'] = 'NoPassngr'
+                    t['Line'] = 'No'
+                    t['Car'] = 'Passenger'
+                    t['Destination'] = None
                 trains.append([t['Line'], t['Car'], t['Destination'], t['Min']])
 
         return trains
