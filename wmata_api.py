@@ -10,7 +10,7 @@ class Wmata_API:
         response = requests.get(self.url + station,
                                 headers={'api_key': self.apikey})
         res = response.json()['Trains']
-        print(res)
+        #print(res)
         trains = []
         for t in res:
             if t['Group'] == platform:

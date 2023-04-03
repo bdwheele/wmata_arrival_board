@@ -162,28 +162,28 @@ def main():
             trains = api.fetch_predition(config['metro']['station'], config['metro']['platform'])
             next_fetch = time.time() + 30
 
-        # draw the header
-        panel.clear()
-        panel.text(0, 0, "LN CAR DEST    MIN", colors['RD'])
-        cy = 8
-        # draw the predictions
-        for t in trains:
-            # line name
-            panel.text(0, cy, t[0], colors['YL'])
-            # cars
-            panel.text(18, cy, t[1], colors['GR'] if t[1] == '8' else colors['YL'])
-            # destination
-            panel.text(30, cy, t[2], colors['YL'])
-            # min
-            m = t[3]
-            while len(m) < 3:
-                m = " " + m
-            panel.text(90, cy, m, colors['YL'])
-            cy += 8
+            # draw the header
+            panel.clear()
+            panel.text(0, 0, "LN CAR DEST    MIN", colors['RD'])
+            cy = 8
+            # draw the predictions
+            for t in trains:
+                # line name
+                panel.text(0, cy, t[0], colors['YL'])
+                # cars
+                panel.text(18, cy, t[1], colors['GR'] if t[1] == '8' else colors['YL'])
+                # destination
+                panel.text(30, cy, t[2], colors['YL'])
+                # min
+                m = t[3]
+                while len(m) < 3:
+                    m = " " + m
+                panel.text(90, cy, m, colors['YL'])
+                cy += 8
 
-       
-        # flip() the display to put your work on screen
-        pygame.display.flip()
+        
+            # flip() the display to put your work on screen
+            pygame.display.flip()
         pygame.time.delay(100)
 
     pygame.quit()
