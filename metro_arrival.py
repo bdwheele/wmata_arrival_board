@@ -189,7 +189,7 @@ def main():
         
             # flip() the display to put your work on screen
             pygame.display.flip()
-        pygame.time.delay(100)
+        pygame.time.delay(1000)
 
     pygame.quit()
 

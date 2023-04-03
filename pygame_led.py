@@ -128,7 +128,7 @@ class LEDPanel:
         "Set a single LED to the given color"
         cx = x * self.ledsize + self.ledsize / 2
         cy = y * self.ledsize + self.ledsize / 2
-        pygame.draw.circle(self.surface, Color(color), (cx, cy), radius = self.ledsize / 2)
+        pygame.draw.circle(self.surface, Color(color), (cx, cy), radius = (self.ledsize / 2) - 1)
                            
 
     def reset(self, x, y):
